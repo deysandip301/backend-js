@@ -8,6 +8,7 @@ let courses = [
 ];
 
 app.use(express.json());
+app.use(logger);
 
 app.get('/courses', (req, res) => {
     res.json(courses);
@@ -62,3 +63,13 @@ app.delete('/courses/:id', (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 });
+
+function logger(req, res, next) {
+    const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+    const host = req.hostname;
+    const date = new Date().toISOString();
+    const method = req.method;
+
+    console.log(`Method: ${method}, IP: ${ip}, Host: ${host}, Date: ${date}`);
+    next();
+}
